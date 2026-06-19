@@ -6,7 +6,7 @@ import { ledAPI, apiKeyAPI } from "../api";
 
 const API_BASE_URL = import.meta.env.MODE === 'development' 
   ? 'http://localhost:5000' 
-  : 'https://smartbee-backend.onrender.com'
+  : 'https://smartbee-backend-xl0g.onrender.com'
 
 
 
