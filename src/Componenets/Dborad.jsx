@@ -34,8 +34,8 @@ const Dborad = () => {
   const farmId = localStorage.getItem("farmId");
   console.log("Farm ID in Dashboard:", farmId);
   
-  const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_KEY;
-  const THINGSPEAK_KEY = import.meta.env.VITE_THINGSPEAK_KEY;;
+  const OPENWEATHER_KEY = import.meta.env.VITE_OPENWEATHER_KEY || '8e88a178b6f8d7c81283a7bf200969fa';
+  const THINGSPEAK_KEY = import.meta.env.VITE_THINGSPEAK_KEY || 'C4SNIR7EP4W21360';
 
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000);
