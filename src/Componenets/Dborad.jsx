@@ -246,7 +246,7 @@ const fetchWeather = async () => {
             <h1 className="text-4xl font-bold text-[#f0f4c3]">Hive Dashboard 🐝</h1>
             <p className="text-sm text-[#f0f4c3]/80">Overview of hive health and local weather</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <p>Farm ID: {farmId}</p>
             <button
               onClick={() => {

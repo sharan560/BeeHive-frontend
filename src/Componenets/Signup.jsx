@@ -57,7 +57,7 @@ const Signup = () => {
         <Navbar />
       </div>
 
-      <main className="flex flex-col justify-center items-center max-w-6xl mx-auto px-6 py-12 mt-20">
+      <main className="flex flex-col justify-center items-center max-w-6xl mx-auto px-6 py-12 mt-24 md:mt-32">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ const Signup = () => {
           className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 w-full"
         >
           <div className="flex-shrink-0 text-center md:text-left">
-            <img src={honey} alt="Signup" className="w-[500px] h-[500px]" />
+            <img src={honey} alt="Signup" className="w-48 h-48 md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] rounded-xl shadow-md" />
           </div>
 
           <div className="w-full flex flex-col justify-center">

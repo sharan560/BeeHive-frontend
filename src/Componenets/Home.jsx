@@ -35,7 +35,7 @@ const Home = () => {
 
           <div className="flex flex-col items-center justify-center h-[85vh] gap-6 p-6">
             <h1
-              className="text-5xl font-bold text-[#f0f4c3]"
+              className="text-3xl md:text-5xl font-bold text-[#f0f4c3]"
 
             >
               Welcome to <span className="text-yellow-200">SMARTBEE 🐝!</span>
@@ -65,7 +65,7 @@ const Home = () => {
             Our Features
           </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-10/12 ">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-[90%] md:w-10/12 ">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -101,13 +101,13 @@ const Home = () => {
 
 
         <motion.div
-        className="flex flex-col md:flex-row items-center md:items-start justify-center mt-16 gap-10 p-4 mb-10 bg-[#f0f4c3] rounded-2xl shadow-md w-1/2 mx-auto"
+        className="flex flex-col md:flex-row items-center md:items-start justify-center mt-16 gap-10 p-4 mb-10 bg-[#f0f4c3] rounded-2xl shadow-md w-[90%] md:w-3/4 lg:w-1/2 mx-auto"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         >
         <motion.div
-            className="flex flex-col w-72 h-72"
+            className="flex flex-col w-48 h-48 md:w-72 md:h-72"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}

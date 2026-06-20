@@ -66,7 +66,7 @@ const Login = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      <main className="flex flex-col justify-center items-center max-w-4xl mx-auto px-6 py-12 mt-40">
+      <main className="flex flex-col justify-center items-center max-w-4xl mx-auto px-6 py-12 mt-24 md:mt-40">
         <motion.div
           variants={cardVariants}
           initial="hidden"
@@ -74,7 +74,7 @@ const Login = () => {
           className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8 w-full"
         >
           <div className="flex-shrink-0 text-center md:text-left">
-            <img src={honey} alt="Sharan" className="w-72 h-72 rounded-xl shadow-md" />
+            <img src={honey} alt="Sharan" className="w-48 h-48 md:w-72 md:h-72 rounded-xl shadow-md" />
           </div>
 
           <div className="w-full flex flex-col justify-center">
