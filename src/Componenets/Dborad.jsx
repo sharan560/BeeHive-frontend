@@ -295,7 +295,7 @@ const fetchWeather = async () => {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Weather Card */}
           <motion.div
-            className="col-span-1 bg-[#f0f4c3] text-[#33691e] rounded-3xl shadow-lg p-6 border border-[#cddc39]"
+            className="col-span-1 h-fit self-center bg-[#f0f4c3] text-[#33691e] rounded-3xl shadow-lg p-6 border border-[#cddc39]"
             whileHover={{ scale: 1.02 }}
           >
             <div className="flex items-center justify-between">
