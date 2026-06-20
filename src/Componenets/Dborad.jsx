@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { ledAPI, apiKeyAPI } from "../api";
-
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 const API_BASE_URL = import.meta.env.MODE === 'development' 
   ? 'http://localhost:5000' 
   : 'https://smartbee-backend-xl0g.onrender.com'
@@ -21,6 +21,7 @@ const weatherFor = (key) => {
 
 const Dborad = () => {
   const [hives, setHives] = useState([]);
+  const [hiveHistory, setHiveHistory] = useState([]);
   const [heaters, setHeaters] = useState({});
   const [weather, setWeather] = useState({
     temp: 25,
@@ -114,13 +115,14 @@ const fetchWeather = async () => {
   
   const fetchHives = async () => {
     try {
-      const res = await fetch(
+      // 1. Fetch real-time data for the current hive card
+      const resLatest = await fetch(
         `https://api.thingspeak.com/channels/3126283/feeds.json?api_key=${THINGSPEAK_KEY}&results=1`
       );
-      const data = await res.json();
+      const dataLatest = await resLatest.json();
 
-      if (data && Array.isArray(data.feeds) && data.feeds.length > 0) {
-        const latest = data.feeds[0];
+      if (dataLatest && Array.isArray(dataLatest.feeds) && dataLatest.feeds.length > 0) {
+        const latest = dataLatest.feeds[0];
         const lastUpdateTime = new Date(latest.created_at);
         const now = new Date();
         const diffMin = (now - lastUpdateTime) / 60000; // minutes
@@ -130,7 +132,7 @@ const fetchWeather = async () => {
             id: 1,
             temp: parseFloat(latest.field2) || 0,
             humidity: parseFloat(latest.field3) || 0,
-            ph: parseFloat(latest.field4) || 0,
+            ph: (parseFloat(latest.field4) || 0) / 10,
             weight: parseFloat(latest.field5) || 0,
             live: diffMin < 1, // offline if older than 1 minute
           },
@@ -139,9 +141,31 @@ const fetchWeather = async () => {
       } else {
         setHives([]);
       }
+
+      // 2. Fetch 30-minute average data for the historical graph
+      const resHistory = await fetch(
+        `https://api.thingspeak.com/channels/3126283/feeds.json?api_key=${THINGSPEAK_KEY}&results=100&average=30`
+      );
+      const dataHistory = await resHistory.json();
+
+      if (dataHistory && Array.isArray(dataHistory.feeds) && dataHistory.feeds.length > 0) {
+        const history = dataHistory.feeds
+          .filter(f => f.field2 != null || f.field3 != null || f.field4 != null)
+          .map(f => ({
+            time: new Date(f.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            temp: f.field2 ? parseFloat(f.field2) : null,
+            humidity: f.field3 ? parseFloat(f.field3) : null,
+            ph: f.field4 ? parseFloat(f.field4) / 10 : null
+          }));
+        setHiveHistory(history);
+      } else {
+        setHiveHistory([]);
+      }
+
     } catch (err) {
       console.error("Error fetching hive data:", err);
       setHives([]);
+      setHiveHistory([]);
     }
   };
 
@@ -303,28 +327,25 @@ const fetchWeather = async () => {
             </div>
           </motion.div>
 
-          {/* Gauge Card */}
+          {/* Trend Chart Card */}
           <motion.div
-            className="col-span-1 md:col-span-2 bg-[#f0f4c3] text-[#33691e] rounded-3xl shadow-lg p-6 flex items-center justify-center border border-[#cddc39]"
+            className="col-span-1 md:col-span-2 bg-[#f0f4c3] text-[#33691e] rounded-3xl shadow-lg p-6 flex flex-col justify-center border border-[#cddc39]"
             whileHover={{ scale: 1.01 }}
           >
-            <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
-              <Gauge value={urgency} size={160} stroke={14} />
-              <div className="max-w-md">
-                <h3 className="text-xl font-semibold">Care Attention Score</h3>
-                <p className="text-sm text-[#558b2f]">
-                  Estimated attention required based on hive and weather.
-                </p>
-                <div className="mt-4 flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${gaugeColor}`} />
-                  <div className="text-sm font-medium">{urgency}%</div>
-                </div>
-                  <ul className="mt-3 text-sm text-[#33691e] space-y-1">
-                    <li>Temp deviation: {Math.round(tempScore)}%</li>
-                    <li>Humidity deviation: {Math.round(humidityScore)}%</li>
-                    <li>pH deviation: {Math.round(phScore)}%</li>
-                  </ul>
-              </div>
+            <h3 className="text-xl font-semibold mb-4 text-center md:text-left">Parameter Trends (30-Min Intervals, Last 100 Readings)</h3>
+            <div className="w-full h-72 sm:h-80 md:h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={hiveHistory} margin={{ top: 5, right: 10, bottom: 20, left: -10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cddc39" />
+                  <XAxis dataKey="time" stroke="#33691e" tick={{fontSize: 10}} minTickGap={30} tickMargin={10} />
+                  <YAxis stroke="#33691e" tick={{fontSize: 10}} />
+                  <Tooltip contentStyle={{backgroundColor: '#f0f4c3', borderColor: '#cddc39', borderRadius: '8px', fontSize: '12px'}} />
+                  <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                  <Line type="monotone" dataKey="temp" stroke="#e53935" name="Temp (°C)" strokeWidth={2} dot={{r: 2}} activeDot={{r: 4}} />
+                  <Line type="monotone" dataKey="humidity" stroke="#1e88e5" name="Humidity (%)" strokeWidth={2} dot={{r: 2}} activeDot={{r: 4}} />
+                  <Line type="monotone" dataKey="ph" stroke="#8e24aa" name="pH" strokeWidth={2} dot={{r: 2}} activeDot={{r: 4}} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </motion.div>
         </section>
@@ -369,7 +390,7 @@ const fetchWeather = async () => {
 
                   <div className="text-sm text-[#33691e] space-y-1 mb-3">
                     <div>Humidity: {h.humidity}%</div>
-                    <div>pH: {h.ph}</div>
+                    <div>pH: {h.ph?.toFixed(2)}</div>
                     <div>
                       Weight:0.{Number.isFinite(h.weight) ? Math.round(Math.abs(h.weight)) : 0} kg
                     </div>

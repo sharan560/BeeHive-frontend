@@ -14,7 +14,7 @@ const mockSignIn = (email, password) => {
       } else {
         if (!email.includes('@')) {
           reject(new Error('Invalid email format'))
-        } 
+        }
       }
     }, 700)
   })
@@ -28,33 +28,33 @@ const Login = () => {
   const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
-  e.preventDefault()
-  setError('')
-  if (!email) return setError('Please enter your email')
-  if (!password) return setError('Please enter your password')
+    e.preventDefault()
+    setError('')
+    if (!email) return setError('Please enter your email')
+    if (!password) return setError('Please enter your password')
 
-  setLoading(true)
-  try {
-    const res = await authAPI.login({
-      email,
-      password,
-    })
+    setLoading(true)
+    try {
+      const res = await authAPI.login({
+        email,
+        password,
+      })
 
-    localStorage.setItem('user', JSON.stringify(res.data.user))
-    localStorage.setItem('farmId', res.data.user.farmId)
-    localStorage.setItem('token', res.data.token)
-    console.log('res.data:', res.data.user)
-    navigate('/dashboard')
-  } catch (err) {
-    if (err.response && err.response.data) {
-      setError(err.response.data.message)
-    } else {
-      setError('Login failed. Please try again.')
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+      localStorage.setItem('farmId', res.data.user.farmId)
+      localStorage.setItem('token', res.data.token)
+      console.log('res.data:', res.data.user)
+      navigate('/dashboard')
+    } catch (err) {
+      if (err.response && err.response.data) {
+        setError(err.response.data.message)
+      } else {
+        setError('Login failed. Please try again.')
+      }
+    } finally {
+      setLoading(false)
     }
-  } finally {
-    setLoading(false)
   }
-}
 
   // Motion variants for the card
   const cardVariants = {

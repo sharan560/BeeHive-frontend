@@ -1,9 +1,7 @@
 import axios from 'axios'
 
 // Use localhost for development, production URL for production
-const API_BASE_URL = import.meta.env.MODE === 'development' 
-  ? 'http://localhost:5000' 
-  : 'https://smartbee-backend-xl0g.onrender.com'
+const API_BASE_URL = 'https://smartbee-backend-xl0g.onrender.com'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
